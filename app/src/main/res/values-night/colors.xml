@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme colors -->
+    <color name="colorBackground">#000000</color>
+    <color name="colorSurface">#1C1C1E</color>
+
+    <color name="colorNumberBtn">#2D2D2D</color>
+    <color name="colorNumberBtnPressed">#3D3D3D</color>
+
+    <color name="colorFunctionBtn">#2D2D2D</color>
+    <color name="colorFunctionBtnPressed">#3D3D3D</color>
+
+    <color name="colorOperatorBtn">#2D2D2D</color>
+    <color name="colorOperatorBtnPressed">#3D3D3D</color>
+    <color name="colorOperatorText">#FFFFFF</color>
+
+    <color name="colorEqualsBtn">#2D2D2D</color>
+    <color name="colorEqualsBtnPressed">#3D3D3D</color>
+
+    <color name="colorClearBtn">#2D2D2D</color>
+    <color name="colorClearBtnPressed">#3D3D3D</color>
+    <color name="colorClearText">#FF453A</color>
+
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextSecondary">#8E8E93</color>
+    <color name="colorError">#FF453A</color>
+
+    <color name="colorDivider">#22FFFFFF</color>
+    <color name="colorTopBarIcon">#8E8E93</color>
+</resources>

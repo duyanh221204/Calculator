@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme colors (default) -->
+    <color name="colorBackground">#F2F2F7</color>
+    <color name="colorSurface">#FFFFFF</color>
+
+    <color name="colorNumberBtn">#E5E5EA</color>
+    <color name="colorNumberBtnPressed">#D1D1D6</color>
+
+    <color name="colorFunctionBtn">#E5E5EA</color>
+    <color name="colorFunctionBtnPressed">#D1D1D6</color>
+
+    <color name="colorOperatorBtn">#E5E5EA</color>
+    <color name="colorOperatorBtnPressed">#D1D1D6</color>
+    <color name="colorOperatorText">#000000</color>
+
+    <color name="colorEqualsBtn">#E5E5EA</color>
+    <color name="colorEqualsBtnPressed">#D1D1D6</color>
+
+    <color name="colorClearBtn">#E5E5EA</color>
+    <color name="colorClearBtnPressed">#D1D1D6</color>
+    <color name="colorClearText">#FF3B30</color>
+
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorTextSecondary">#8E8E93</color>
+    <color name="colorError">#FF3B30</color>
+
+    <color name="colorDivider">#22000000</color>
+    <color name="colorTopBarIcon">#8E8E93</color>
+</resources>
