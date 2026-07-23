@@ -29,7 +29,6 @@
             android:textSize="28sp"
             android:inputType="text"
             android:importantForAutofill="no"
-            android:hint="0"
             android:textColorHint="@color/colorTextSecondary" />
 
         <TextView
@@ -54,10 +53,31 @@
         android:paddingTop="2dp"
         android:paddingBottom="2dp">
 
+        <Button
+            android:id="@+id/btn_deg_rad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="DEG"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:textColor="@color/colorTextSecondary"
+            android:contentDescription="@string/deg_rad_toggle"
+            android:onClick="onButtonClick" />
+
         <ImageButton
             android:id="@+id/btn_theme"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginStart="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_dark_mode"
             android:scaleType="centerInside"
@@ -143,14 +163,14 @@
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
                 <Button android:id="@+id/btn_e" style="@style/CalcButton.Function" android:text="e" android:onClick="onButtonClick" />
-                <Button android:id="@+id/btn_open_paren_land" style="@style/CalcButton.Function" android:text="(" android:onClick="onButtonClick" />
-                <Button android:id="@+id/btn_close_paren_land" style="@style/CalcButton.Function" android:text=")" android:onClick="onButtonClick" />
+                <Button android:id="@+id/btn_abs" style="@style/CalcButton.Function" android:text="|x|" android:onClick="onButtonClick" />
+                <Button android:id="@+id/btn_cbrt" style="@style/CalcButton.Function" android:text="∛" android:onClick="onButtonClick" />
             </LinearLayout>
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="horizontal">
-                <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
-                <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
-                <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" />
+                <Button android:id="@+id/btn_asin" style="@style/CalcButton.Function" android:text="sin⁻¹" android:onClick="onButtonClick" />
+                <Button android:id="@+id/btn_acos" style="@style/CalcButton.Function" android:text="cos⁻¹" android:onClick="onButtonClick" />
+                <Button android:id="@+id/btn_atan" style="@style/CalcButton.Function" android:text="tan⁻¹" android:onClick="onButtonClick" />
             </LinearLayout>
         </LinearLayout>
 

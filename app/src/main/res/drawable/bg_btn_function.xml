@@ -2,8 +2,9 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/colorFunctionBtnPressed">
     <item>
-        <shape android:shape="oval">
+        <shape android:shape="rectangle">
             <solid android:color="@color/colorFunctionBtn" />
+            <corners android:radius="100dp" />
         </shape>
     </item>
 </ripple>

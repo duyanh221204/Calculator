@@ -1,4 +1,4 @@
-package com.duyanhnguyen.myapplication.ui;
+package com.duyanhnguyen.myapplication.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.duyanhnguyen.myapplication.R;
 import com.duyanhnguyen.myapplication.data.HistoryManager;
 import com.duyanhnguyen.myapplication.model.HistoryItem;
+import com.duyanhnguyen.myapplication.ui.adapter.HistoryAdapter;
 
 import java.util.List;
 

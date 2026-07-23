@@ -38,14 +38,14 @@ public class ExpressionValidator {
 
         List<String> tokens;
         try {
-            tokens = ExpressionEvaluator.tokenize(expression);
+            tokens = ExpressionConverter.tokenize(expression);
         } catch (Exception e) {
             return Result.fail("Không thể phân tích biểu thức");
         }
         if (tokens.isEmpty()) return Result.fail("Biểu thức trống");
 
         String prev = null;
-        for (int i = 0; i < tokens.size(); i++) {
+        for (int i = 0; i < tokens.size(); ++i) {
             String t = tokens.get(i);
             String next = (i + 1 < tokens.size()) ? tokens.get(i + 1) : null;
 
@@ -62,14 +62,14 @@ public class ExpressionValidator {
                 return Result.fail("Dấu ngoặc rỗng '()'");
             }
             // a function name must always be followed by '('
-            if (ExpressionEvaluator.isFunction(t) && !"(".equals(next)) {
+            if (ExpressionConverter.isFunction(t) && !"(".equals(next)) {
                 return Result.fail("Hàm '" + t + "' phải có dấu '(' theo sau");
             }
             prev = t;
         }
 
         String last = tokens.get(tokens.size() - 1);
-        if (isBinaryOp(last) || "~".equals(last) || ExpressionEvaluator.isFunction(last)) {
+        if (isBinaryOp(last) || "~".equals(last) || ExpressionConverter.isFunction(last)) {
             return Result.fail("Biểu thức chưa hoàn chỉnh");
         }
 
@@ -88,9 +88,12 @@ public class ExpressionValidator {
 
     private static String displaySymbol(String internal) {
         switch (internal) {
-            case "*": return "×";
-            case "/": return "÷";
-            default: return internal;
+            case "*":
+                return "×";
+            case "/":
+                return "÷";
+            default:
+                return internal;
         }
     }
 

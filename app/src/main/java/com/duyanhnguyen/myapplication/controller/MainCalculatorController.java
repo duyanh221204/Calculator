@@ -3,9 +3,11 @@ package com.duyanhnguyen.myapplication.controller;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,15 +19,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
 import com.duyanhnguyen.myapplication.R;
+import com.duyanhnguyen.myapplication.controller.helper.CalculatorInputManager;
+import com.duyanhnguyen.myapplication.controller.helper.KeyMappingContext;
 import com.duyanhnguyen.myapplication.data.HistoryManager;
 import com.duyanhnguyen.myapplication.engine.ExpressionEvaluator;
 import com.duyanhnguyen.myapplication.engine.ExpressionValidator;
-import com.duyanhnguyen.myapplication.ui.HistoryActivity;
+import com.duyanhnguyen.myapplication.ui.activity.HistoryActivity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainCalculatorController {
 
@@ -42,17 +44,22 @@ public class MainCalculatorController {
     private static final float EXPR_SIZE_RESULT_LAND = 16f;
     private static final float RESULT_SIZE_RESULT_LAND = 36f;
 
+    private static final long DELETE_REPEAT_DELAY_MS = 80L;
+
     private final AppCompatActivity activity;
+    private MainUiShellController shellController;
     private EditText expressionDisplay;
     private TextView resultDisplay;
     private boolean isResultShown = false;
     private HistoryManager historyManager;
-    private final Map<Integer, String> keyMap = new HashMap<>();
     private int colorNormal, colorPreview, colorError;
     private ActivityResultLauncher<Intent> historyLauncher;
+    private final Handler deleteHandler = new Handler();
+    private Runnable deleteRunnable;
 
-    public MainCalculatorController(AppCompatActivity activity) {
+    public MainCalculatorController(AppCompatActivity activity, MainUiShellController shellController) {
         this.activity = activity;
+        this.shellController = shellController;
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -67,10 +74,10 @@ public class MainCalculatorController {
         expressionDisplay = activity.findViewById(R.id.text_expression);
         resultDisplay = activity.findViewById(R.id.text_result);
 
-        setupKeyMap();
         setupHistoryLauncher();
 
         expressionDisplay.setShowSoftInputOnFocus(false);
+        expressionDisplay.requestFocus();
         expressionDisplay.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
@@ -84,7 +91,7 @@ public class MainCalculatorController {
         View piButton = activity.findViewById(R.id.btn_pi);
         if (piButton != null) {
             piButton.setOnLongClickListener(v -> {
-                insertAtCursor("e");
+                appendToExpression("e", false);
                 return true;
             });
         }
@@ -93,7 +100,7 @@ public class MainCalculatorController {
             String expr = savedInstanceState.getString(KEY_EXPRESSION, "");
             int cursorPos = savedInstanceState.getInt(KEY_CURSOR_POS, expr.length());
             isResultShown = savedInstanceState.getBoolean(KEY_RESULT_SHOWN, false);
-            String resultText = savedInstanceState.getString(KEY_RESULT_TEXT, "0");
+            String resultText = savedInstanceState.getString(KEY_RESULT_TEXT, "");
 
             expressionDisplay.setText(expr);
             expressionDisplay.setSelection(Math.min(cursorPos, expr.length()));
@@ -101,6 +108,32 @@ public class MainCalculatorController {
         }
 
         applyTextSizes();
+
+        // Long-press delete: repeat every DELETE_REPEAT_DELAY_MS
+        View deleteBtn = activity.findViewById(R.id.btn_delete);
+        if (deleteBtn != null) {
+            deleteBtn.setOnLongClickListener(v -> {
+                deleteRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        deleteLast();
+                        deleteHandler.postDelayed(this, DELETE_REPEAT_DELAY_MS);
+                    }
+                };
+                deleteHandler.postDelayed(deleteRunnable, DELETE_REPEAT_DELAY_MS);
+                return true;
+            });
+            deleteBtn.setOnTouchListener((v, event) -> {
+                int action = event.getAction();
+                if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                    if (deleteRunnable != null) {
+                        deleteHandler.removeCallbacks(deleteRunnable);
+                        deleteRunnable = null;
+                    }
+                }
+                return false; // let normal click still work
+            });
+        }
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -121,36 +154,20 @@ public class MainCalculatorController {
             calculateResult();
         } else if (id == R.id.btn_history) {
             openHistory();
-        } else if (keyMap.containsKey(id)) {
-            String value = keyMap.get(id);
-            appendToExpression(value, isBinaryOperator(value));
         } else {
-            String value = getLandscapeKeyValue(id);
+            String value = KeyMappingContext.getKeyValue(id);
             if (value != null) {
-                appendToExpression(value, isBinaryOperator(value));
+                appendToExpression(value, KeyMappingContext.isBinaryOperator(value));
             }
         }
     }
 
-    private void setupKeyMap() {
-        keyMap.put(R.id.btn_0, "0");
-        keyMap.put(R.id.btn_1, "1");
-        keyMap.put(R.id.btn_2, "2");
-        keyMap.put(R.id.btn_3, "3");
-        keyMap.put(R.id.btn_4, "4");
-        keyMap.put(R.id.btn_5, "5");
-        keyMap.put(R.id.btn_6, "6");
-        keyMap.put(R.id.btn_7, "7");
-        keyMap.put(R.id.btn_8, "8");
-        keyMap.put(R.id.btn_9, "9");
-        keyMap.put(R.id.btn_dot, ".");
-        keyMap.put(R.id.btn_plus, "+");
-        keyMap.put(R.id.btn_minus, "-");
-        keyMap.put(R.id.btn_multiply, "×");
-        keyMap.put(R.id.btn_divide, "÷");
-        keyMap.put(R.id.btn_percent, "%");
-        keyMap.put(R.id.btn_open_paren, "(");
-        keyMap.put(R.id.btn_close_paren, ")");
+    public void onDegRadChanged() {
+        if (isResultShown) {
+            calculateResult();
+        } else {
+            refreshPreview();
+        }
     }
 
     private void setupHistoryLauncher() {
@@ -170,28 +187,8 @@ public class MainCalculatorController {
                 });
     }
 
-    private String getLandscapeKeyValue(int id) {
-        if (id == R.id.btn_sin) return "sin(";
-        if (id == R.id.btn_cos) return "cos(";
-        if (id == R.id.btn_tan) return "tan(";
-        if (id == R.id.btn_log) return "log(";
-        if (id == R.id.btn_ln) return "ln(";
-        if (id == R.id.btn_sqrt) return "√(";
-        if (id == R.id.btn_power) return "^";
-        if (id == R.id.btn_factorial) return "!";
-        if (id == R.id.btn_pi) return "π";
-        if (id == R.id.btn_e) return "e";
-        if (id == R.id.btn_open_paren_land) return "(";
-        if (id == R.id.btn_close_paren_land) return ")";
-        return null;
-    }
-
     private void openHistory() {
         historyLauncher.launch(new Intent(activity, HistoryActivity.class));
-    }
-
-    private boolean isBinaryOperator(String v) {
-        return v.equals("+") || v.equals("-") || v.equals("×") || v.equals("÷") || v.equals("^");
     }
 
     private void appendToExpression(String value, boolean isOperator) {
@@ -207,7 +204,7 @@ public class MainCalculatorController {
         int cursor = expressionDisplay.getSelectionStart();
         if (cursor < 0 || cursor > currentText.length()) cursor = currentText.length();
 
-        if (value.equals(".") && currentNumberHasDecimal(currentText, cursor)) {
+        if (value.equals(".") && CalculatorInputManager.currentNumberHasDecimal(currentText, cursor)) {
             return;
         }
 
@@ -215,7 +212,36 @@ public class MainCalculatorController {
             return;
         }
 
-        insertAtCursor(value);
+        // Block '!' if there's nothing valid (digit, closing paren or !) before the cursor
+        if (value.equals("!")) {
+            if (cursor == 0) return;
+            char prev = currentText.charAt(cursor - 1);
+            if (!Character.isDigit(prev) && prev != ')' && prev != '!') return;
+        }
+
+        // Leading zero removal
+        int removeZeroCount = CalculatorInputManager.getLeadingZeroToRemove(currentText, cursor, value);
+        if (removeZeroCount > 0) {
+            Editable text = expressionDisplay.getText();
+            text.delete(cursor - removeZeroCount, cursor);
+            cursor -= removeZeroCount;
+            currentText = text.toString();
+        }
+
+        // Implicit multiply
+        String stringToInsert = value;
+        if (CalculatorInputManager.shouldAddImplicitMultiply(value, currentText, cursor)) {
+            stringToInsert = "×" + value;
+        }
+
+        // Simulate new text and guard invalid leading zero
+        StringBuilder sb = new StringBuilder(currentText);
+        sb.insert(cursor, stringToInsert);
+        if (CalculatorInputManager.hasInvalidLeadingZero(sb.toString())) {
+            return;
+        }
+
+        insertAtCursor(stringToInsert);
     }
 
     private void insertAtCursor(String value) {
@@ -226,23 +252,9 @@ public class MainCalculatorController {
         expressionDisplay.setSelection(cursor + value.length());
     }
 
-    private boolean currentNumberHasDecimal(String s, int cursorPos) {
-        for (int i = cursorPos - 1; i >= 0; i--) {
-            char c = s.charAt(i);
-            if (c == '.') return true;
-            if (!Character.isDigit(c)) break;
-        }
-        for (int i = cursorPos; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '.') return true;
-            if (!Character.isDigit(c)) break;
-        }
-        return false;
-    }
-
     private void clearAll() {
         expressionDisplay.setText("");
-        resultDisplay.setText("0");
+        resultDisplay.setText("");
         resultDisplay.setTextColor(colorPreview);
         isResultShown = false;
         applyTextSizes();
@@ -256,8 +268,9 @@ public class MainCalculatorController {
         Editable text = expressionDisplay.getText();
         int cursor = expressionDisplay.getSelectionStart();
         if (cursor > 0 && cursor <= text.length()) {
-            text.delete(cursor - 1, cursor);
-            expressionDisplay.setSelection(cursor - 1);
+            int deleteLen = CalculatorInputManager.getFunctionDeleteLength(text.toString(), cursor);
+            text.delete(cursor - deleteLen, cursor);
+            expressionDisplay.setSelection(cursor - deleteLen);
         }
     }
 
@@ -265,7 +278,7 @@ public class MainCalculatorController {
         String expr = expressionDisplay.getText().toString();
 
         if (expr.trim().isEmpty()) {
-            resultDisplay.setText("0");
+            resultDisplay.setText("");
             resultDisplay.setTextColor(colorPreview);
             return;
         }
@@ -273,7 +286,7 @@ public class MainCalculatorController {
         ExpressionValidator.Result validation = ExpressionValidator.validate(expr);
         if (validation.valid) {
             try {
-                double preview = ExpressionEvaluator.evaluate(expr, true);
+                double preview = ExpressionEvaluator.evaluate(expr, shellController.isDegMode());
                 resultDisplay.setText(formatResult(preview));
                 resultDisplay.setTextColor(colorPreview);
             } catch (Exception ignored) {
@@ -292,7 +305,7 @@ public class MainCalculatorController {
         }
 
         try {
-            double value = ExpressionEvaluator.evaluate(expr, true);
+            double value = ExpressionEvaluator.evaluate(expr, shellController.isDegMode());
             String formatted = formatResult(value);
 
             resultDisplay.setText(formatted);

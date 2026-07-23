@@ -1,4 +1,4 @@
-package com.duyanhnguyen.myapplication;
+package com.duyanhnguyen.myapplication.ui.activity;
 
 import android.os.Bundle;
 import android.view.View;

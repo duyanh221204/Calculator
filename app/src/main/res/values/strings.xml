@@ -8,4 +8,5 @@
     <string name="theme_toggle">Chuyển giao diện</string>
     <string name="rotate_screen">Xoay màn hình</string>
     <string name="backspace">Xóa</string>
+    <string name="deg_rad_toggle">DEG/RAD</string>
 </resources>

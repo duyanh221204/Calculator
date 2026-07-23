@@ -1,4 +1,4 @@
-package com.duyanhnguyen.myapplication.ui;
+package com.duyanhnguyen.myapplication.ui.adapter;
 
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
