@@ -22,8 +22,8 @@ import com.duyanhnguyen.myapplication.R;
 import com.duyanhnguyen.myapplication.controller.helper.CalculatorInputManager;
 import com.duyanhnguyen.myapplication.controller.helper.KeyMappingContext;
 import com.duyanhnguyen.myapplication.data.HistoryManager;
-import com.duyanhnguyen.myapplication.engine.ExpressionEvaluator;
-import com.duyanhnguyen.myapplication.engine.ExpressionValidator;
+import com.duyanhnguyen.myapplication.core.ExpressionEvaluator;
+import com.duyanhnguyen.myapplication.core.ExpressionValidator;
 import com.duyanhnguyen.myapplication.ui.activity.HistoryActivity;
 
 import java.math.BigDecimal;
