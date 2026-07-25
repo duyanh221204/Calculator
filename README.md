@@ -508,3 +508,71 @@ MainCalculatorController.onDegRadChanged()
 | Vị trí con trỏ | `Bundle` | `key_cursor_pos` |
 | Trạng thái hiển thị kết quả | `Bundle` | `key_result_shown` |
 | Chuỗi kết quả | `Bundle` | `key_result_text` |
+
+---
+
+## 10. Phân chia công việc (4 người)
+
+### Người 1 — Lõi tính toán & Lưu trữ
+Phụ trách toàn bộ logic thuần toán học và lớp dữ liệu, **không phụ thuộc Android**.
+
+| File | Nhiệm vụ |
+|---|---|
+| `core/ExpressionConverter.java` | Tokenizer + thuật toán Shunting-Yard (Infix → Postfix) |
+| `core/ExpressionEvaluator.java` | Tính giá trị biểu thức Postfix bằng Stack |
+| `core/ExpressionValidator.java` | Kiểm tra hợp lệ biểu thức trước khi tính |
+| `core/BracketValidator.java` | Kiểm tra cân bằng dấu ngoặc bằng Stack |
+| `data/HistoryManager.java` | Đọc/ghi lịch sử tính toán qua SharedPreferences (JSON) |
+| `model/HistoryItem.java` | POJO dữ liệu lịch sử |
+
+> **Giao diện cần thống nhất với Người 2:** Method signature của `ExpressionEvaluator.evaluate(expression, isDegMode)` phải được chốt trước để Người 2 có thể gọi đúng từ `MainCalculatorController`.
+
+---
+
+### Người 2 — Bàn phím máy tính & Logic nhập liệu
+Phụ trách toàn bộ UI bàn phím (cả hai orientation) và luồng xử lý input từ nút bấm đến engine.
+
+| File | Nhiệm vụ                                                                   |
+|---|----------------------------------------------------------------------------|
+| `res/layout/activity_main.xml` | Layout màn hình chính — Portrait                                           |
+| `res/layout-land/activity_main.xml` | Layout màn hình chính — Landscape (bàn phím khoa học)                      |
+| `res/drawable/bg_btn_*.xml` | Drawable nút bấm (pill-shape, 5 loại)                                      |
+| `res/values/styles.xml` | Style hệ thống nút bấm (`CalcButtonBase` và các kế thừa)                   |
+| `controller/helper/KeyMappingContext.java` | Map View ID → token; danh sách `FUNCTION_TOKENS`                           |
+| `controller/helper/CalculatorInputManager.java` | Guard logic: leading zero, implicit multiply, smart delete                 |
+| `controller/MainCalculatorController.java` | Trung tâm điều khiển: gắn sự kiện, gọi core, quản lý `EditText`/`TextView` |
+
+> **Giao diện cần thống nhất với Người 3:** Cần nhận `isDegMode()` từ `MainUiShellController` khi gọi evaluate.
+> **Giao diện cần thống nhất với Người 4:** Cần xử lý callback `ActivityResultLauncher` nhận biểu thức trả về từ `HistoryActivity`.
+
+---
+
+### Người 3 — Shell UI: Theme, DEG/RAD, Xoay màn hình
+Phụ trách các chức năng điều khiển toàn cục không liên quan đến phép tính.
+
+| File | Nhiệm vụ |
+|---|---|
+| `controller/MainUiShellController.java` | Toggle Dark/Light mode, DEG/RAD, xoay màn hình |
+| `controller/MainActivityController.java` | Facade điều phối hai controller con |
+| `ui/activity/MainActivity.java` | Entry point, delegate sự kiện xuống controller |
+| `res/values/colors.xml` | Bảng màu Light mode |
+| `res/values-night/colors.xml` | Ghi đè bảng màu Dark mode |
+| `res/values-land/` | Ghi đè resource cho Landscape |
+| `res/values/themes.xml` | Định nghĩa `Theme.MyCalculator` |
+
+> **Giao diện cần thống nhất với Người 2:** `isDegMode()` phải được cung cấp sẵn để `MainCalculatorController` gọi; `onDegRadChanged()` phải được trigger đúng thời điểm qua `MainActivityController`.
+
+---
+
+### Người 4 — Màn hình lịch sử
+Phụ trách toàn bộ màn hình lịch sử tính toán, độc lập với các màn hình khác.
+
+| File | Nhiệm vụ |
+|---|---|
+| `ui/activity/HistoryActivity.java` | Hiển thị danh sách, xóa lịch sử, trả biểu thức về `MainActivity` |
+| `ui/adapter/HistoryAdapter.java` | `RecyclerView.Adapter` bind `HistoryItem` vào view item |
+| `res/layout/activity_history.xml` | Layout màn hình lịch sử (LinearLayout + RelativeLayout header + FrameLayout) |
+| `res/layout/item_history.xml` | Layout một dòng lịch sử (biểu thức, kết quả, thời gian) |
+
+> **Giao diện cần thống nhất với Người 2:** Key `EXTRA_SELECTED_EXPRESSION` trong `Intent` phải được thỏa thuận để `MainCalculatorController` đọc đúng khi nhận kết quả từ `HistoryActivity`.
+> **Phụ thuộc Người 1:** Dùng `HistoryManager.getAll()` và `HistoryManager.clear()` — cần Người 1 hoàn thiện trước.
