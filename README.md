@@ -24,6 +24,7 @@ Các tính năng nổi bật:
 |---|---|
 | Ngôn ngữ | Java |
 | UI Framework | `AppCompatActivity`, `MaterialComponents` |
+| Layout chính | `LinearLayout` (tất cả màn hình) |
 | Theme | `Theme.MyCalculator` kế thừa `Theme.MaterialComponents.DayNight.NoActionBar` |
 | Dark Mode | `AppCompatDelegate.setDefaultNightMode(...)` |
 | Lưu trữ cài đặt | `SharedPreferences` |
@@ -192,10 +193,10 @@ POJO immutable: `String expression`, `String result`, `long timestamp`. Không c
 > - Landscape chia khu vực bàn phím thành hai cột: cột trái (scientific, weight=3) và cột phải (số, weight=4).
 > - Root layout của `item_history.xml`: `orientation="vertical"`, chứa ba `TextView` xếp chồng.
 
-**`ConstraintLayout`**
-> *Là gì:* Layout linh hoạt, định vị view bằng các ràng buộc (constraint) tương đối với nhau hoặc với parent thay vì lồng layout. Thay thế `RelativeLayout` và cho phép thiết kế phẳng hơn.
+**`RelativeLayout`**
+> *Là gì:* Layout định vị các view con tương đối với nhau hoặc với parent bằng thuộc tính như `layout_alignParentStart`, `layout_alignParentEnd`, `layout_centerInParent`... Khác với `LinearLayout`, các view con được đo và đặt vị trí **độc lập** với nhau.
 >
-> *Dùng trong app:* `activity_history.xml` dùng `ConstraintLayout` làm root. Nút back (`button_back`) neo vào `top_start` của parent; nút "Xóa tất cả" neo vào `top_end`; tiêu đề "Lịch sử" được căn giữa bằng constraint cả hai phía; `RecyclerView` lấp đầy phần còn lại từ dưới `button_back` xuống đáy màn hình (`height=0dp`, bottom-constraint=parent).
+> *Dùng trong app:* Header row của `activity_history.xml`. Nút back neo `alignParentStart`, nút xóa neo `alignParentEnd`, tiêu đề dùng `layout_centerInParent="true"` — căn giữa thực sự so với toàn bộ màn hình, không phụ thuộc kích thước hai nút hai bên.
 
 **`EditText`**
 > *Là gì:* View nhập liệu, kế thừa `TextView`. Có con trỏ (cursor), hỗ trợ chọn text và `Editable` để thao tác nội dung từ code.
@@ -395,16 +396,22 @@ LinearLayout (vertical, root)
 ```
 
 ### `activity_history.xml`
-Root: `ConstraintLayout` — định vị view bằng constraint, không lồng layout.
+Root: `LinearLayout` dọc (root). Header row dùng `RelativeLayout` để căn giữa tiêu đề thực sự.
 
 ```
-ConstraintLayout (root)
-├── ImageButton  id=button_back          (top-start, 40×40dp)
-├── Button       id=button_clear_history (top-end, màu đỏ)
-├── TextView     (tiêu đề "Lịch sử", căn giữa ngang, ngang bằng button_back)
-├── TextView     id=text_empty_history   (visibility=gone, hiện khi danh sách rỗng)
-└── RecyclerView id=recycler_history     (0dp × 0dp, từ dưới button_back tới đáy)
+LinearLayout (vertical, root)
+│
+├── RelativeLayout — Header
+│   ├── ImageButton  id=button_back           (alignParentStart, 40×40dp)
+│   ├── Button       id=button_clear_history  (alignParentEnd, màu đỏ)
+│   └── TextView     (centerInParent → căn giữa thực sự so với parent)
+│
+└── FrameLayout (layout_weight=1) — Vùng nội dung
+    ├── RecyclerView  id=recycler_history    (match_parent)
+    └── TextView      id=text_empty_history  (layout_gravity=center, visibility=gone)
 ```
+
+`RelativeLayout` được chọn cho header vì `LinearLayout` không thể căn giữa thực sự khi hai nút hai bên có kích thước khác nhau. `FrameLayout` cho phép `text_empty_history` và `RecyclerView` chồng lên nhau — khi rỗng, text hiện giữa màn hình; khi có dữ liệu, text gone và RecyclerView hiển thị danh sách.
 
 ### `item_history.xml`
 Root: `LinearLayout` dọc — một mục trong danh sách lịch sử.
