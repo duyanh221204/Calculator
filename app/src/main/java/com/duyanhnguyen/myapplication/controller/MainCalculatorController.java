@@ -155,9 +155,7 @@ public class MainCalculatorController {
     }
 
     public void onDegRadChanged() {
-        if (isResultShown) {
-            calculateResult();
-        } else {
+        if (!isResultShown) {
             refreshPreview();
         }
     }
