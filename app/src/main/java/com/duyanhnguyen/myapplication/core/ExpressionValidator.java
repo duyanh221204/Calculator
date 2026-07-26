@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Validates an infix expression BEFORE we ever try to evaluate it:
- *   1. Bracket matching        - delegated to BracketValidator (stack based)
+ *   1. Bracket matching        - checked inline using a depth counter
  *   2. Token-sequence rules    - no double operators, no dangling operator,
  *                                functions must be followed by '(', no empty '()'.
  *
@@ -32,9 +32,6 @@ public class ExpressionValidator {
         if (expression == null || expression.trim().isEmpty()) {
             return Result.fail("Biểu thức trống");
         }
-
-        BracketValidator.Result br = BracketValidator.check(expression);
-        if (!br.valid) return Result.fail(br.message);
 
         List<String> tokens;
         try {

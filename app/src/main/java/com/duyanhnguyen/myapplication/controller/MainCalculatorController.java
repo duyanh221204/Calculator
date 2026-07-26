@@ -88,14 +88,6 @@ public class MainCalculatorController {
             }
         });
 
-        View piButton = activity.findViewById(R.id.btn_pi);
-        if (piButton != null) {
-            piButton.setOnLongClickListener(v -> {
-                appendToExpression("e", false);
-                return true;
-            });
-        }
-
         if (savedInstanceState != null) {
             String expr = savedInstanceState.getString(KEY_EXPRESSION, "");
             int cursorPos = savedInstanceState.getInt(KEY_CURSOR_POS, expr.length());

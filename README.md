@@ -72,8 +72,7 @@ app/src/main/
 │   ├── core/
 │   │   ├── ExpressionConverter.java
 │   │   ├── ExpressionEvaluator.java
-│   │   ├── ExpressionValidator.java
-│   │   └── BracketValidator.java
+│   │   └── ExpressionValidator.java
 │   ├── data/
 │   │   └── HistoryManager.java
 │   └── model/
@@ -108,7 +107,7 @@ Hiển thị danh sách lịch sử trong `RecyclerView`. Khi người dùng ch�
 `RecyclerView.Adapter` kết nối danh sách `HistoryItem` với các view item trong danh sách. Mỗi item hiển thị: biểu thức (xám, nhỏ), kết quả (trắng, đậm, lớn), thời gian định dạng `HH:mm dd/MM/yyyy`. Dùng `ViewHolder pattern` để tái sử dụng view, tránh `findViewById` lặp lại.
 
 ### `controller/MainActivityController.java`
-**Facade pattern** — lớp duy nhất `MainActivity` biết đến. Tạo và giữ hai controller con: `MainUiShellController` và `MainCalculatorController`. Trong `onButtonClick`, gọi cả hai controller; đặc biệt khi nút `btn_deg_rad` được nhấn, gọi thêm `calculatorController.onDegRadChanged()` để tính lại kết quả ngay lập tức.
+Lớp duy nhất `MainActivity` biết đến. Tạo và giữ hai controller con: `MainUiShellController` và `MainCalculatorController`. Trong `onButtonClick`, gọi cả hai controller; đặc biệt khi nút `btn_deg_rad` được nhấn, gọi thêm `calculatorController.onDegRadChanged()` để tính lại kết quả ngay lập tức.
 
 ### `controller/MainUiShellController.java`
 Quản lý ba chức năng shell không liên quan đến tính toán:
@@ -130,7 +129,7 @@ Dữ liệu tĩnh thuần Java, không phụ thuộc Android runtime:
 - `portraitKeyMap` (`HashMap<Integer, String>`): ánh xạ Resource ID nút → chuỗi token (vd: `R.id.btn_sin → "sin("`).
 - `FUNCTION_TOKENS` (`String[]`): danh sách chuỗi hàm để `CalculatorInputManager` biết cần xóa bao nhiêu ký tự khi backspace.
 - `getKeyValue(id)`: tra portrait map trước, nếu không có thì tra landscape map.
-- `isBinaryOperator(String)`: phân biệt toán tử nhị phân để áp dụng guard.
+- `isBinaryOperator(String)`: phân biệt toán tử hai ngôi để áp dụng guard.
 
 ### `controller/helper/CalculatorInputManager.java`
 Thuần Java logic, không biết Android View là gì:
@@ -148,17 +147,13 @@ Bước 1 và 2 trong pipeline tính toán:
 **Infix → Postfix (Shunting-Yard):** Dùng `Stack<String>` làm operator stack. Precedence: `+`,`-`=1, `*`,`/`=2, `~`=3, `^`=4. `^` và `~` right-associative. `!` và `%` là postfix unary, đẩy thẳng vào output.
 
 ### `core/ExpressionEvaluator.java`
-Bước 3: Đánh giá Postfix bằng `Stack<Double>`. Duyệt token: số/hằng số → push; `~` → đảo dấu; `!` → giai thừa (0–170); `%` → chia 100; hàm → `Math.*`; toán tử nhị phân → pop 2, tính, push. Hàm lượng giác nhận `degreeMode`: DEG thì `Math.toRadians()` trước khi tính, hàm ngược thì `Math.toDegrees()` sau khi tính. Ném `EvalException` nếu stack cuối ≠ 1 phần tử hoặc kết quả `NaN`/`Infinity`.
+Bước 3: Đánh giá Postfix bằng `Stack<Double>`. Duyệt token: số/hằng số → push; `~` → đảo dấu; `!` → giai thừa (0–170); `%` → chia 100; hàm → `Math.*`; toán tử hai ngôi → pop 2, tính, push. Hàm lượng giác nhận `degreeMode`: DEG thì `Math.toRadians()` trước khi tính, hàm ngược thì `Math.toDegrees()` sau khi tính. Ném `EvalException` nếu stack cuối ≠ 1 phần tử hoặc kết quả `NaN`/`Infinity`.
 
 ### `core/ExpressionValidator.java`
 Được gọi **trước** `ExpressionEvaluator`. Kiểm tra theo thứ tự:
-1. Ngoặc: ủy quyền cho `BracketValidator`.
-2. Tokenize: gọi `ExpressionConverter.tokenize()`.
-3. Duyệt cặp token: toán tử thiếu số hạng, ngoặc rỗng `()`, hàm không có `(` sau, biểu thức kết thúc bằng toán tử/hàm chưa hoàn chỉnh.
+1. Tokenize: gọi `ExpressionConverter.tokenize()`.
+2. Duyệt cặp token: toán tử thiếu số hạng, ngoặc rỗng `()`, hàm không có `(` sau, biểu thức kết thúc bằng toán tử/hàm chưa hoàn chỉnh.
 Trả `Result { valid, message }`.
-
-### `core/BracketValidator.java`
-Stack-based bracket checker: `Stack<Character>`. Gặp `(` → push; gặp `)` và stack rỗng → lỗi thừa `)`. Sau khi duyệt hết, stack còn phần tử → lỗi thiếu `)`.
 
 ### `data/HistoryManager.java`
 - Lưu trữ trong `SharedPreferences` file `"calculator_history_prefs"`, key `"history_json"` dạng JSON array.
@@ -167,7 +162,7 @@ Stack-based bracket checker: `Stack<Character>`. Gặp `(` → push; gặp `)` v
 - `clear`: Xóa key khỏi SharedPreferences.
 
 ### `model/HistoryItem.java`
-POJO immutable: `String expression`, `String result`, `long timestamp`. Không có setter, không có logic.
+POJO immutable: `String expression`, `String result`, `long timestamp`.
 
 ---
 
@@ -460,7 +455,6 @@ MainActivityController.onButtonClick(v)
                           ┌───────────────────────────┘
                           ▼
               ExpressionValidator.validate(expr)
-                  ├── BracketValidator.check()
                   └── ExpressionConverter.tokenize() → kiểm tra token sequence
                             │
                       invalid → bỏ qua (chỉ khi preview)
@@ -520,8 +514,7 @@ Phụ trách toàn bộ logic thuần toán học và lớp dữ liệu, **khôn
 |---|---|
 | `core/ExpressionConverter.java` | Tokenizer + thuật toán Shunting-Yard (Infix → Postfix) |
 | `core/ExpressionEvaluator.java` | Tính giá trị biểu thức Postfix bằng Stack |
-| `core/ExpressionValidator.java` | Kiểm tra hợp lệ biểu thức trước khi tính |
-| `core/BracketValidator.java` | Kiểm tra cân bằng dấu ngoặc bằng Stack |
+| `core/ExpressionValidator.java` | Kiểm tra hợp lệ biểu thức (ngoặc + token-sequence) trước khi tính |
 | `data/HistoryManager.java` | Đọc/ghi lịch sử tính toán qua SharedPreferences (JSON) |
 | `model/HistoryItem.java` | POJO dữ liệu lịch sử |
 
