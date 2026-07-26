@@ -406,7 +406,7 @@ LinearLayout (vertical, root)
     └── TextView      id=text_empty_history  (layout_gravity=center, visibility=gone)
 ```
 
-`RelativeLayout` được chọn cho header vì `LinearLayout` không thể căn giữa thực sự khi hai nút hai bên có kích thước khác nhau. `FrameLayout` cho phép `text_empty_history` và `RecyclerView` chồng lên nhau — khi rỗng, text hiện giữa màn hình; khi có dữ liệu, text gone và RecyclerView hiển thị danh sách.
+`RelativeLayout` được chọn cho header vì khả năng định vị độc lập (`centerInParent`) giúp căn giữa tiêu đề thực sự mà không cần lồng thêm nhiều lớp layout phụ trợ (như khi dùng `LinearLayout` phải bọc bằng các `FrameLayout` có cùng `layout_weight`). `FrameLayout` cho phép `text_empty_history` và `RecyclerView` chồng lên nhau — khi rỗng, text hiện giữa màn hình; khi có dữ liệu, text gone và RecyclerView hiển thị danh sách.
 
 ### `item_history.xml`
 Root: `LinearLayout` dọc — một mục trong danh sách lịch sử.
