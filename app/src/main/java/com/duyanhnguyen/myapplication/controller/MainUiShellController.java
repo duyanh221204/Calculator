@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.duyanhnguyen.myapplication.R;
 import com.duyanhnguyen.myapplication.ui.activity.GraphActivity;
-import com.duyanhnguyen.myapplication.ui.activity.HistoryActivity;
 
 public class MainUiShellController {
 
@@ -50,8 +49,6 @@ public class MainUiShellController {
         } else if (id == R.id.btn_deg_rad) {
             toggleDegRad();
             updateDegRadLabel();
-        } else if (id == R.id.btn_history) {
-            openHistoryActivity();
         } else if (id == R.id.btn_graph) {
             openGraphActivity();
         }
@@ -134,11 +131,6 @@ public class MainUiShellController {
     // -------------------------------------------------------------------------
     // Navigation
     // -------------------------------------------------------------------------
-
-    private void openHistoryActivity() {
-        Intent intent = new Intent(activity, HistoryActivity.class);
-        activity.startActivity(intent);
-    }
 
     private void openGraphActivity() {
         Intent intent = new Intent(activity, GraphActivity.class);
