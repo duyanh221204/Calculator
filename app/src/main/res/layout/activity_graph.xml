@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.duyanhnguyen.myapplication.ui.view.GraphView
+        android:id="@+id/graphView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF" />
+
+    <!-- Nút reset về giữa -->
+    <Button
+        android:id="@+id/btnResetView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="12dp"
+        android:text="Reset" />
+
+    <!-- Khung nhập thu gọn: nằm dưới cùng, bấm vào để mở rộng toàn màn hình -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/collapsedBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="0dp">
+
+        <TextView
+            android:id="@+id/tvFunctionPreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="y = nhấn để nhập hàm số"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:fontFamily="monospace" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Overlay toàn màn hình để nhập/sửa hàm số, mặc định ẩn -->
+    <LinearLayout
+        android:id="@+id/editorOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        android:elevation="16dp"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="y ="
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/etFunction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:textSize="22sp"
+                android:fontFamily="monospace"
+                android:inputType="text"
+                android:hint="vd: sin(x)*x^2 - 3" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#E53935"
+            android:layout_marginTop="4dp" />
+
+        <!-- Bàn phím ký hiệu toán học, chèn nhanh vào EditText -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:columnCount="5"
+            android:rowCount="4">
+
+            <Button android:id="@+id/btnX" android:text="x" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnPow" android:text="^" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnLParen" android:text="(" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnRParen" android:text=")" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnDiv" android:text="÷" style="@style/KeypadButton" />
+
+            <Button android:id="@+id/btnSin" android:text="sin" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnCos" android:text="cos" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnTan" android:text="tan" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnSqrt" android:text="sqrt" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnMul" android:text="×" style="@style/KeypadButton" />
+
+            <Button android:id="@+id/btnLn" android:text="ln" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnAbs" android:text="abs" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnPi" android:text="π" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnPlus" android:text="+" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnMinus" android:text="-" style="@style/KeypadButton" />
+
+            <Button android:id="@+id/btnClearEntry" android:text="AC" style="@style/KeypadButton" />
+            <Button android:id="@+id/btnBackspace" android:text="⌫" style="@style/KeypadButton" />
+        </GridLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Huỷ" />
+
+            <Button
+                android:id="@+id/btnPlot"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Vẽ đồ thị" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
