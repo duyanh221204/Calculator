@@ -23,6 +23,11 @@
             android:name=".ui.activity.HistoryActivity"
             android:label="@string/history_title" />
 
+        <activity
+            android:name=".ui.activity.GraphActivity"
+            android:label="@string/graph_title"
+            android:exported="false" />
+
     </application>
 
 </manifest>

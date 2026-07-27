@@ -1,5 +1,6 @@
 package com.duyanhnguyen.myapplication.controller;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.duyanhnguyen.myapplication.R;
+import com.duyanhnguyen.myapplication.ui.activity.GraphActivity;
+import com.duyanhnguyen.myapplication.ui.activity.HistoryActivity;
 
 public class MainUiShellController {
 
@@ -47,6 +50,10 @@ public class MainUiShellController {
         } else if (id == R.id.btn_deg_rad) {
             toggleDegRad();
             updateDegRadLabel();
+        } else if (id == R.id.btn_history) {
+            openHistoryActivity();
+        } else if (id == R.id.btn_graph) {
+            openGraphActivity();
         }
     }
 
@@ -122,6 +129,20 @@ public class MainUiShellController {
         } else {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // Navigation
+    // -------------------------------------------------------------------------
+
+    private void openHistoryActivity() {
+        Intent intent = new Intent(activity, HistoryActivity.class);
+        activity.startActivity(intent);
+    }
+
+    private void openGraphActivity() {
+        Intent intent = new Intent(activity, GraphActivity.class);
+        activity.startActivity(intent);
     }
 
 }
