@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Calculator</string>
-    <string name="deg_rad_toggle">Toggle DEG/RAD mode</string>
-    <string name="theme_toggle">Toggle dark/light theme</string>
-    <string name="history_title">History</string>
-    <string name="graph_title">Draw Graph</string>
-    <string name="rotate_screen">Rotate screen</string>
-    <string name="backspace">Backspace</string>
+    <string name="app_name">My Calculator</string>
+    <string name="history_title">Lịch sử</string>
+    <string name="invalid_expression">Không hợp lệ</string>
+    <string name="clear_history">Xóa hết</string>
+    <string name="no_history">Chưa có phép tính nào</string>
+    <string name="theme_toggle">Chuyển giao diện</string>
+    <string name="rotate_screen">Xoay màn hình</string>
+    <string name="backspace">Xóa</string>
+    <string name="deg_rad_toggle">DEG/RAD</string>
+    <string name="graph_title">Vẽ Đồ Thị</string>
 </resources>
