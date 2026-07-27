@@ -147,7 +147,7 @@ public class MainCalculatorController {
         } else if (id == R.id.btn_history) {
             openHistory();
         } else {
-            String value = KeyMappingContext.getKeyValue(id);
+            String value = KeyMappingContext.getValue(id);
             if (value != null) {
                 appendToExpression(value, KeyMappingContext.isBinaryOperator(value));
             }

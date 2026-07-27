@@ -83,7 +83,7 @@ public class ExpressionConverter {
         return result;
     }
 
-    private static int precedence(String op) {
+    private static int level(String op) {
         switch (op) {
             case "+": case "-": return 1;
             case "*": case "/": return 2;
@@ -137,8 +137,8 @@ public class ExpressionConverter {
                 output.add(token);
             } else if (isOperator(token)) {
                 while (!opStack.isEmpty() && isOperator(opStack.peek()) &&
-                        (precedence(opStack.peek()) > precedence(token) ||
-                                (precedence(opStack.peek()) == precedence(token) && !isRightAssociative(token)))) {
+                        (level(opStack.peek()) > level(token) ||
+                                (level(opStack.peek()) == level(token) && !isRightAssociative(token)))) {
                     output.add(opStack.pop());
                 }
                 opStack.push(token);

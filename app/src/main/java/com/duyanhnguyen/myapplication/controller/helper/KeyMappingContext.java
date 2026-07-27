@@ -2,53 +2,39 @@ package com.duyanhnguyen.myapplication.controller.helper;
 
 import com.duyanhnguyen.myapplication.R;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class KeyMappingContext {
 
-    private static final Map<Integer, String> portraitKeyMap = new HashMap<>();
-
     public static final String[] FUNCTION_TOKENS = {
-            "asin(", "acos(", "atan(", "cbrt(",   // 5 chars
-            "sin(", "cos(", "tan(", "log(", "abs(", // 4 chars
-            "^(",                                   // 2 chars
-            "√(",                                    // 2 chars (sqrt symbol)
-            "ln("                                   // 3 chars
+            "asin(", "acos(", "atan(", "cbrt(",
+            "sin(", "cos(", "tan(", "log(", "abs(",
+            "^(",
+            "√(",
+            "ln("
     };
 
-    static {
-        portraitKeyMap.put(R.id.btn_0, "0");
-        portraitKeyMap.put(R.id.btn_1, "1");
-        portraitKeyMap.put(R.id.btn_2, "2");
-        portraitKeyMap.put(R.id.btn_3, "3");
-        portraitKeyMap.put(R.id.btn_4, "4");
-        portraitKeyMap.put(R.id.btn_5, "5");
-        portraitKeyMap.put(R.id.btn_6, "6");
-        portraitKeyMap.put(R.id.btn_7, "7");
-        portraitKeyMap.put(R.id.btn_8, "8");
-        portraitKeyMap.put(R.id.btn_9, "9");
-
-        portraitKeyMap.put(R.id.btn_dot, ".");
-        portraitKeyMap.put(R.id.btn_plus, "+");
-        portraitKeyMap.put(R.id.btn_minus, "-");
-        portraitKeyMap.put(R.id.btn_multiply, "×");
-        portraitKeyMap.put(R.id.btn_divide, "÷");
-
-        portraitKeyMap.put(R.id.btn_open_paren, "(");
-        portraitKeyMap.put(R.id.btn_close_paren, ")");
-        portraitKeyMap.put(R.id.btn_percent, "%");
+    public static String getPortraitValue(int id) {
+        if (id == R.id.btn_0) return "0";
+        if (id == R.id.btn_1) return "1";
+        if (id == R.id.btn_2) return "2";
+        if (id == R.id.btn_3) return "3";
+        if (id == R.id.btn_4) return "4";
+        if (id == R.id.btn_5) return "5";
+        if (id == R.id.btn_6) return "6";
+        if (id == R.id.btn_7) return "7";
+        if (id == R.id.btn_8) return "8";
+        if (id == R.id.btn_9) return "9";
+        if (id == R.id.btn_dot) return ".";
+        if (id == R.id.btn_plus) return "+";
+        if (id == R.id.btn_minus) return "-";
+        if (id == R.id.btn_multiply) return "×";
+        if (id == R.id.btn_divide) return "÷";
+        if (id == R.id.btn_open_paren) return "(";
+        if (id == R.id.btn_close_paren) return ")";
+        if (id == R.id.btn_percent) return "%";
+        return null;
     }
 
-    public static boolean hasPortraitKey(int id) {
-        return portraitKeyMap.containsKey(id);
-    }
-
-    public static String getPortraitKey(int id) {
-        return portraitKeyMap.get(id);
-    }
-
-    public static String getLandscapeKeyValue(int id) {
+    public static String getLandscapeValue(int id) {
         if (id == R.id.btn_sin) return "sin(";
         if (id == R.id.btn_cos) return "cos(";
         if (id == R.id.btn_tan) return "tan(";
@@ -67,13 +53,19 @@ public class KeyMappingContext {
         return null;
     }
 
-    public static String getKeyValue(int id) {
-        if (hasPortraitKey(id)) return getPortraitKey(id);
-        return getLandscapeKeyValue(id);
+    public static String getValue(int id) {
+        String value = getPortraitValue(id);
+        if (value != null) return value;
+        return getLandscapeValue(id);
     }
 
     public static boolean isBinaryOperator(String v) {
-        return v.equals("+") || v.equals("-") || v.equals("×") || v.equals("÷") || v.equals("^") || v.equals("^(");
+        return v.equals("+")
+                || v.equals("-")
+                || v.equals("×")
+                || v.equals("÷")
+                || v.equals("^")
+                || v.equals("^(");
     }
 
 }
