@@ -35,6 +35,11 @@ public class GraphActivity extends AppCompatActivity {
         tvError = findViewById(R.id.tvError);
         etFunction = findViewById(R.id.etFunction);
 
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
+
         findViewById(R.id.btnResetView).setOnClickListener(v -> graphView.resetView());
         collapsedBar.setOnClickListener(v -> openEditor());
         findViewById(R.id.btnCancel).setOnClickListener(v -> closeEditor());

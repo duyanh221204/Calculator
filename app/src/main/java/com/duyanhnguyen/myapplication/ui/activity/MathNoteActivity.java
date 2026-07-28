@@ -32,6 +32,11 @@ public class MathNoteActivity extends AppCompatActivity {
         drawingView = findViewById(R.id.drawing_view);
         tvStatus = findViewById(R.id.tv_status);
         Button btnClear = findViewById(R.id.btn_clear);
+        View btnBack = findViewById(R.id.btn_back);
+
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
 
         inkManager = new MathInkManager();
 

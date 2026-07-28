@@ -33,7 +33,6 @@
         <activity
             android:name=".ui.activity.MathNoteActivity"
             android:label="Math Note"
-            android:screenOrientation="portrait"
             android:exported="false" />
 
     </application>
