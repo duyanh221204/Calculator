@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,10 +33,15 @@ public class MathNoteActivity extends AppCompatActivity {
         drawingView = findViewById(R.id.drawing_view);
         tvStatus = findViewById(R.id.tv_status);
         Button btnClear = findViewById(R.id.btn_clear);
+        Button btnResetZoom = findViewById(R.id.btn_reset_zoom);
         View btnBack = findViewById(R.id.btn_back);
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
+        }
+
+        if (btnResetZoom != null) {
+            btnResetZoom.setOnClickListener(v -> drawingView.resetZoom());
         }
 
         inkManager = new MathInkManager();
