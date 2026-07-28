@@ -118,13 +118,29 @@ public class MainUiShellController {
         }
     }
 
+    private int getCurrentEffectiveOrientation() {
+        int requested = activity.getRequestedOrientation();
+        if (requested != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            return requested;
+        }
+        int configOrientation = activity.getResources().getConfiguration().orientation;
+        if (configOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
+        } else if (configOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            return ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
+        }
+        return ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    }
+
     private void openGraphActivity() {
         Intent intent = new Intent(activity, GraphActivity.class);
+        intent.putExtra("EXTRA_ORIENTATION", getCurrentEffectiveOrientation());
         activity.startActivity(intent);
     }
 
     private void openMathNoteActivity() {
         Intent intent = new Intent(activity, com.duyanhnguyen.myapplication.ui.activity.MathNoteActivity.class);
+        intent.putExtra("EXTRA_ORIENTATION", getCurrentEffectiveOrientation());
         activity.startActivity(intent);
     }
 }

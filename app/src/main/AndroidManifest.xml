@@ -28,11 +28,15 @@
         <activity
             android:name=".ui.activity.GraphActivity"
             android:label="@string/graph_title"
+            android:screenOrientation="behind"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
 
         <activity
             android:name=".ui.activity.MathNoteActivity"
             android:label="Math Note"
+            android:screenOrientation="behind"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false" />
 
     </application>

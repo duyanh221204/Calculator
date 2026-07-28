@@ -25,6 +25,11 @@ public class GraphActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        int requestedOrientation = getIntent().getIntExtra("EXTRA_ORIENTATION", android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        if (requestedOrientation != android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            setRequestedOrientation(requestedOrientation);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
