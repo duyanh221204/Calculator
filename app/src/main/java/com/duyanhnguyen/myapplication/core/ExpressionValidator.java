@@ -2,15 +2,6 @@ package com.duyanhnguyen.myapplication.core;
 
 import java.util.List;
 
-/**
- * Validates an infix expression BEFORE we ever try to evaluate it:
- *   1. Bracket matching        - checked inline using a depth counter
- *   2. Token-sequence rules    - no double operators, no dangling operator,
- *                                functions must be followed by '(', no empty '()'.
- *
- * Only when {@link #validate} returns a valid Result does MainActivity attempt
- * ExpressionEvaluator.evaluate(...) and save the calculation to history.
- */
 public class ExpressionValidator {
 
     private ExpressionValidator() { }
@@ -46,19 +37,18 @@ public class ExpressionValidator {
             String t = tokens.get(i);
             String next = (i + 1 < tokens.size()) ? tokens.get(i + 1) : null;
 
-            // binary operator with nothing valid before it (unary '~' is exempt)
             if (isBinaryOp(t) && (prev == null || isBinaryOp(prev) || "(".equals(prev))) {
                 return Result.fail("Thiếu số hạng trước toán tử '" + displaySymbol(t) + "'");
             }
-            // binary operator with nothing valid after it
+
             if (isBinaryOp(t) && (next == null || isBinaryOp(next) || ")".equals(next))) {
                 return Result.fail("Thiếu số hạng sau toán tử '" + displaySymbol(t) + "'");
             }
-            // empty parentheses "()"
+
             if ("(".equals(t) && ")".equals(next)) {
                 return Result.fail("Dấu ngoặc rỗng '()'");
             }
-            // a function name must always be followed by '('
+
             if (ExpressionConverter.isFunction(t) && !"(".equals(next)) {
                 return Result.fail("Hàm '" + t + "' phải có dấu '(' theo sau");
             }

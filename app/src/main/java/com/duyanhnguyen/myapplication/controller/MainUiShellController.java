@@ -51,16 +51,14 @@ public class MainUiShellController {
             updateDegRadLabel();
         } else if (id == R.id.btn_graph) {
             openGraphActivity();
+        } else if (id == R.id.btn_math_note) {
+            openMathNoteActivity();
         }
     }
 
-    // -------------------------------------------------------------------------
-    // DEG / RAD
-    // -------------------------------------------------------------------------
-
     public boolean isDegMode() {
         return activity.getSharedPreferences(PREFS_THEME, AppCompatActivity.MODE_PRIVATE)
-                .getBoolean(KEY_IS_DEG, true); // default: DEG
+                .getBoolean(KEY_IS_DEG, true);
     }
 
     private void toggleDegRad() {
@@ -77,10 +75,6 @@ public class MainUiShellController {
             btn.setText(isDegMode() ? "DEG" : "RAD");
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Theme
-    // -------------------------------------------------------------------------
 
     private void applySavedTheme() {
         SharedPreferences prefs = activity.getSharedPreferences(PREFS_THEME, AppCompatActivity.MODE_PRIVATE);
@@ -115,10 +109,6 @@ public class MainUiShellController {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Screen rotation
-    // -------------------------------------------------------------------------
-
     private void rotateScreen() {
         int orientation = activity.getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -128,13 +118,13 @@ public class MainUiShellController {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Navigation
-    // -------------------------------------------------------------------------
-
     private void openGraphActivity() {
         Intent intent = new Intent(activity, GraphActivity.class);
         activity.startActivity(intent);
     }
 
+    private void openMathNoteActivity() {
+        Intent intent = new Intent(activity, com.duyanhnguyen.myapplication.ui.activity.MathNoteActivity.class);
+        activity.startActivity(intent);
+    }
 }
