@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,16 +33,42 @@ public class MathNoteActivity extends AppCompatActivity {
 
         drawingView = findViewById(R.id.drawing_view);
         tvStatus = findViewById(R.id.tv_status);
-        Button btnClear = findViewById(R.id.btn_clear);
-        Button btnResetZoom = findViewById(R.id.btn_reset_zoom);
+        View btnClear = findViewById(R.id.btn_clear);
+        View btnResetZoom = findViewById(R.id.btn_reset_zoom);
+        View btnUndo = findViewById(R.id.btn_undo);
+        ImageButton btnMode = findViewById(R.id.btn_mode);
         View btnBack = findViewById(R.id.btn_back);
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
+        if (btnClear != null) {
+            btnClear.setOnClickListener(v -> drawingView.clear());
+        }
+
         if (btnResetZoom != null) {
             btnResetZoom.setOnClickListener(v -> drawingView.resetZoom());
+        }
+
+        if (btnUndo != null) {
+            btnUndo.setOnClickListener(v -> drawingView.undo());
+        }
+
+        if (btnMode != null) {
+            btnMode.setOnClickListener(v -> {
+                if (drawingView.getMode() == DrawingView.Mode.DRAW) {
+                    drawingView.setMode(DrawingView.Mode.ERASE);
+                    btnMode.setImageResource(android.R.drawable.ic_menu_delete);
+                    btnMode.setColorFilter(android.graphics.Color.parseColor("#F44336"));
+                    Toast.makeText(this, "Eraser Mode", Toast.LENGTH_SHORT).show();
+                } else {
+                    drawingView.setMode(DrawingView.Mode.DRAW);
+                    btnMode.setImageResource(android.R.drawable.ic_menu_edit);
+                    btnMode.setColorFilter(android.graphics.Color.parseColor("#FF9800"));
+                    Toast.makeText(this, "Pen Mode", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         inkManager = new MathInkManager();
