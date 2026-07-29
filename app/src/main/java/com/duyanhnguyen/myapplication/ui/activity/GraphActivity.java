@@ -25,6 +25,11 @@ public class GraphActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        int requestedOrientation = getIntent().getIntExtra("EXTRA_ORIENTATION", android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        if (requestedOrientation != android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            setRequestedOrientation(requestedOrientation);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
@@ -35,6 +40,11 @@ public class GraphActivity extends AppCompatActivity {
         tvError = findViewById(R.id.tvError);
         etFunction = findViewById(R.id.etFunction);
 
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
+
         findViewById(R.id.btnResetView).setOnClickListener(v -> graphView.resetView());
         collapsedBar.setOnClickListener(v -> openEditor());
         findViewById(R.id.btnCancel).setOnClickListener(v -> closeEditor());
@@ -42,7 +52,6 @@ public class GraphActivity extends AppCompatActivity {
 
         setupKeypad();
 
-        // Vẽ sẵn 1 hàm ví dụ để người dùng thấy ngay kết quả
         etFunction.setText("x^3-3*x");
         tryPlot();
     }
@@ -66,7 +75,7 @@ public class GraphActivity extends AppCompatActivity {
         }
         try {
             FunctionParser.Expr expr = FunctionParser.parse(text);
-            // eval thử 1 lần để bắt sớm lỗi runtime (vd chia cho biến chưa hỗ trợ)
+
             expr.eval(1.0);
 
             graphView.setFunction(expr, text);
@@ -80,7 +89,6 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    /** Chèn text vào vị trí con trỏ hiện tại trong EditText. */
     private void insertAtCursor(String text) {
         Editable editable = etFunction.getText();
         int start = etFunction.getSelectionStart();

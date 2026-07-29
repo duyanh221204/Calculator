@@ -3,20 +3,12 @@ package com.duyanhnguyen.myapplication.core;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Parser cho hàm số 1 biến, ví dụ: "sin(x)*x^2 - sqrt(x)+3", "x^3-3*x".
- * Hỗ trợ: + - * / ^ ( ) , biến x, hằng pi/e, hàm sin cos tan asin acos atan
- * sqrt ln log abs exp.
- *
- * Dùng recursive-descent 2 tầng: Tokenizer -> Parser -> cây Expr có eval(x).
- */
 public class FunctionParser {
 
     public static class ParseException extends RuntimeException {
         public ParseException(String msg) { super(msg); }
     }
 
-    /** Cây biểu thức đã parse, dùng lại nhiều lần để eval tại các x khác nhau (nhanh). */
     public interface Expr {
         double eval(double x);
     }
@@ -31,7 +23,6 @@ public class FunctionParser {
         return e;
     }
 
-    // ---------------------------------------------------------------- Token
     private enum TokType { NUMBER, IDENT, OP, LPAREN, RPAREN, COMMA }
 
     private static class Token {
@@ -71,7 +62,7 @@ public class FunctionParser {
                 i++;
                 continue;
             }
-            // hỗ trợ luôn ký tự × ÷ nếu người dùng nhập từ bàn phím tuỳ biến
+
             if (c == '×') { tokens.add(new Token(TokType.OP, "*")); i++; continue; }
             if (c == '÷') { tokens.add(new Token(TokType.OP, "/")); i++; continue; }
 
@@ -80,7 +71,6 @@ public class FunctionParser {
         return tokens;
     }
 
-    // --------------------------------------------------------------- Parser
     private static final java.util.Set<String> FUNCTIONS = new java.util.HashSet<>(java.util.Arrays.asList(
             "sin", "cos", "tan", "asin", "acos", "atan", "sqrt", "ln", "log", "abs", "exp"));
 
@@ -94,7 +84,6 @@ public class FunctionParser {
         private Token peek() { return isAtEnd() ? null : tokens.get(pos); }
         private Token advance() { return tokens.get(pos++); }
 
-        // expression := term (('+'|'-') term)*
         Expr parseExpression() {
             Expr left = parseTerm();
             while (!isAtEnd() && peek().type == TokType.OP
@@ -106,7 +95,6 @@ public class FunctionParser {
             return left;
         }
 
-        // term := power (('*'|'/') power)*
         private Expr parseTerm() {
             Expr left = parsePower();
             while (!isAtEnd() && peek().type == TokType.OP
@@ -118,7 +106,6 @@ public class FunctionParser {
             return left;
         }
 
-        // power := unary ('^' power)?   (right-associative)
         private Expr parsePower() {
             Expr base = parseUnary();
             if (!isAtEnd() && peek().type == TokType.OP && peek().text.equals("^")) {
@@ -129,7 +116,6 @@ public class FunctionParser {
             return base;
         }
 
-        // unary := '-' unary | primary
         private Expr parseUnary() {
             if (!isAtEnd() && peek().type == TokType.OP && peek().text.equals("-")) {
                 advance();
@@ -139,7 +125,6 @@ public class FunctionParser {
             return parsePrimary();
         }
 
-        // primary := NUMBER | 'x' | 'pi' | 'e' | FUNC '(' expression ')' | '(' expression ')'
         private Expr parsePrimary() {
             if (isAtEnd()) throw new ParseException("Biểu thức thiếu toán hạng");
             Token t = peek();

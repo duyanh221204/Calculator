@@ -31,7 +31,7 @@ public class MainActivityController {
     public void onButtonClick(View v) {
         shellController.onButtonClick(v);
         calculatorController.onButtonClick(v);
-        
+
         if (v.getId() == R.id.btn_deg_rad) {
             calculatorController.onDegRadChanged();
         }

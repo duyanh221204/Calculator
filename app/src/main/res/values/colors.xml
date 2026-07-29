@@ -27,4 +27,7 @@
 
     <color name="colorDivider">#22000000</color>
     <color name="colorTopBarIcon">#8E8E93</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

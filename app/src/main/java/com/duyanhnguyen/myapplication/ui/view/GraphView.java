@@ -17,17 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * View vẽ đồ thị hàm số 2D.
- *
- * Tương tác:
- *  - 1 ngón tay kéo trên đường cong -> chế độ "trace": hiện toạ độ tại điểm
- *    gần nhất theo x của ngón tay.
- *  - 2 ngón tay -> pan (kéo) + pinch zoom toàn khung nhìn.
- *
- * Hệ toạ độ: giữ 1 biến scale "pxPerUnit" áp dụng cho cả trục x và y để
- * hình dạng đồ thị không bị méo khi zoom (không zoom lệch trục).
- */
 public class GraphView extends View {
 
     private static class Extremum {
@@ -39,9 +28,8 @@ public class GraphView extends View {
     private FunctionParser.Expr function;
     private String functionLabel = "";
 
-    // --- viewport: (originPx) là toạ độ pixel ứng với điểm toán học (0,0) ---
     private float originPxX, originPxY;
-    private float pxPerUnit = 80f; // 80px = 1 đơn vị lúc khởi tạo
+    private float pxPerUnit = 80f;
     private static final float MIN_PX_PER_UNIT = 4f;
     private static final float MAX_PX_PER_UNIT = 4000f;
 
@@ -49,7 +37,6 @@ public class GraphView extends View {
     private static final double EXTREMA_DOMAIN_MIN = -100;
     private static final double EXTREMA_DOMAIN_MAX = 100;
 
-    // --- trace mode (1 ngón tay) ---
     private boolean tracing = false;
     private double traceMathX = 0;
 
@@ -101,13 +88,12 @@ public class GraphView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (oldw == 0 && oldh == 0) {
-            // căn giữa gốc toạ độ lần đầu
+
             originPxX = w / 2f;
             originPxY = h / 2f;
         }
     }
 
-    /** Gọi khi người dùng nhập hàm mới. */
     public void setFunction(FunctionParser.Expr expr, String label) {
         this.function = expr;
         this.functionLabel = label;
@@ -123,13 +109,11 @@ public class GraphView extends View {
         invalidate();
     }
 
-    // ---------------------------------------------------------- Toạ độ
     private float mathToScreenX(double x) { return (float) (originPxX + x * pxPerUnit); }
     private float mathToScreenY(double y) { return (float) (originPxY - y * pxPerUnit); }
     private double screenToMathX(float px) { return (px - originPxX) / pxPerUnit; }
     private double screenToMathY(float py) { return (originPxY - py) / pxPerUnit; }
 
-    // ---------------------------------------------------------- Vẽ
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -143,7 +127,7 @@ public class GraphView extends View {
     }
 
     private void drawGrid(Canvas canvas) {
-        double step = niceStep(100 / (double) pxPerUnit); // ~100px giữa 2 vạch
+        double step = niceStep(100 / (double) pxPerUnit);
         double startX = Math.floor(screenToMathX(0) / step) * step;
         double endX = screenToMathX(getWidth());
         for (double x = startX; x <= endX; x += step) {
@@ -159,14 +143,14 @@ public class GraphView extends View {
     }
 
     private void drawAxes(Canvas canvas) {
-        canvas.drawLine(0, originPxY, getWidth(), originPxY, axisPaint); // trục x
-        canvas.drawLine(originPxX, 0, originPxX, getHeight(), axisPaint); // trục y
+        canvas.drawLine(0, originPxY, getWidth(), originPxY, axisPaint);
+        canvas.drawLine(originPxX, 0, originPxX, getHeight(), axisPaint);
 
         double step = niceStep(100 / (double) pxPerUnit);
         double startX = Math.floor(screenToMathX(0) / step) * step;
         double endX = screenToMathX(getWidth());
         for (double x = startX; x <= endX; x += step) {
-            if (Math.abs(x) < step / 2) continue; // bỏ nhãn ở gốc cho gọn
+            if (Math.abs(x) < step / 2) continue;
             float px = mathToScreenX(x);
             canvas.drawText(formatNumber(x), px + 4, originPxY - 6, textPaint);
         }
@@ -183,7 +167,7 @@ public class GraphView extends View {
         Path path = new Path();
         boolean penDown = false;
         Float prevScreenY = null;
-        float maxJump = getHeight() * 3f; // ngưỡng phát hiện gián đoạn (tiệm cận đứng)
+        float maxJump = getHeight() * 3f;
 
         for (int px = 0; px <= getWidth(); px += 2) {
             double mx = screenToMathX(px);
@@ -202,7 +186,7 @@ public class GraphView extends View {
             float py = mathToScreenY(my);
 
             if (prevScreenY != null && Math.abs(py - prevScreenY) > maxJump) {
-                // nhảy quá lớn -> coi như gián đoạn (vd tan(x) tại pi/2)
+
                 penDown = false;
             }
 
@@ -256,7 +240,7 @@ public class GraphView extends View {
         float padding = dp(4);
         float left = anchorX - textWidth / 2f - padding;
         float right = anchorX + textWidth / 2f + padding;
-        // giữ label trong màn hình
+
         if (left < 0) { right -= left; left = 0; }
         if (right > getWidth()) { left -= (right - getWidth()); right = getWidth(); }
 
@@ -264,7 +248,6 @@ public class GraphView extends View {
         canvas.drawText(text, left + padding, anchorY, textPaint);
     }
 
-    // ---------------------------------------------------------- Cực trị
     private void computeExtrema() {
         extrema.clear();
         if (function == null) return;
@@ -325,7 +308,6 @@ public class GraphView extends View {
         return (lo + hi) / 2;
     }
 
-    // ---------------------------------------------------------- Touch
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
@@ -334,7 +316,7 @@ public class GraphView extends View {
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 activePointerCount = event.getPointerCount();
-                tracing = false; // đủ 2 ngón -> chuyển sang pan/zoom, tắt trace
+                tracing = false;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 activePointerCount = event.getPointerCount() - 1;
@@ -395,7 +377,6 @@ public class GraphView extends View {
         }
     }
 
-    // ---------------------------------------------------------- Helpers
     private static double niceStep(double rawStep) {
         if (rawStep <= 0) return 1;
         double exponent = Math.floor(Math.log10(rawStep));

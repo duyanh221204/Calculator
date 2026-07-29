@@ -10,6 +10,18 @@
         android:layout_height="match_parent"
         android:background="#FFFFFF" />
 
+    <!-- Nút quay lại màn hình trước -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back"
+        android:src="@android:drawable/ic_menu_revert"
+        android:tint="#333333" />
+
     <!-- Nút reset về giữa -->
     <Button
         android:id="@+id/btnResetView"

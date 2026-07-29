@@ -101,7 +101,6 @@ public class MainCalculatorController {
 
         applyTextSizes();
 
-        // Long-press delete: repeat every DELETE_REPEAT_DELAY_MS
         View deleteBtn = activity.findViewById(R.id.btn_delete);
         if (deleteBtn != null) {
             deleteBtn.setOnLongClickListener(v -> {
@@ -123,7 +122,7 @@ public class MainCalculatorController {
                         deleteRunnable = null;
                     }
                 }
-                return false; // let normal click still work
+                return false;
             });
         }
     }
@@ -202,14 +201,12 @@ public class MainCalculatorController {
             return;
         }
 
-        // Block '!' if there's nothing valid (digit, closing paren or !) before the cursor
         if (value.equals("!")) {
             if (cursor == 0) return;
             char prev = currentText.charAt(cursor - 1);
             if (!Character.isDigit(prev) && prev != ')' && prev != '!') return;
         }
 
-        // Leading zero removal
         int removeZeroCount = CalculatorInputManager.getLeadingZeroToRemove(currentText, cursor, value);
         if (removeZeroCount > 0) {
             Editable text = expressionDisplay.getText();
@@ -218,13 +215,11 @@ public class MainCalculatorController {
             currentText = text.toString();
         }
 
-        // Implicit multiply
         String stringToInsert = value;
         if (CalculatorInputManager.shouldAddImplicitMultiply(value, currentText, cursor)) {
             stringToInsert = "×" + value;
         }
 
-        // Simulate new text and guard invalid leading zero
         StringBuilder sb = new StringBuilder(currentText);
         sb.insert(cursor, stringToInsert);
         if (CalculatorInputManager.hasInvalidLeadingZero(sb.toString())) {
